@@ -75,13 +75,13 @@ pipeline {
 
                     echo "API Response: ${response}"
 
-                    if (!response.contains("prediction")) {
+                    if (!response.contains("wine_quality")) {
                         error("❌ Prediction field missing in response.")
                     }
 
                     def parsed = readJSON text: response
 
-                    if (!(parsed.prediction instanceof Number)) {
+                    if (!(parsed.wine_quality instanceof Number)) {
                         error("❌ Prediction is not numeric.")
                     }
 
