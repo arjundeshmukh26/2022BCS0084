@@ -5,7 +5,6 @@ pipeline {
         IMAGE_NAME = "arjundockerhublab/lab6-model:latest"
         CONTAINER_NAME = "lab7_inference_test"
         API_PORT = "8030"
-        SHOULD_FAIL = "false"
     }
 
     stages {
@@ -34,13 +33,15 @@ pipeline {
                     timeout(time: 60, unit: 'SECONDS') {
                         waitUntil {
                             def status = sh(
-                                script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:${API_PORT}/health || true",
+                                script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:${API_PORT}/ || true",
                                 returnStdout: true
                             ).trim()
 
+                            echo "Current status: ${status}"
                             return (status == "200")
                         }
                     }
+                    echo "✅ Service is ready."
                 }
             }
         }
@@ -97,6 +98,7 @@ pipeline {
 
                     def body = readFile('response.txt')
                     echo "Error Response: ${body}"
+                    echo "Status Code: ${status}"
 
                     if (status == "200") {
                         error("❌ Invalid input did not fail as expected.")
