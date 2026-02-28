@@ -33,7 +33,7 @@ pipeline {
                     timeout(time: 60, unit: 'SECONDS') {
                         waitUntil {
                             def status = sh(
-                                script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:${API_PORT}/ || true",
+                                script: "curl -s -o /dev/null -w '%{http_code}' http://host.docker.internal:${API_PORT}/ || true",
                                 returnStdout: true
                             ).trim()
 
@@ -54,7 +54,7 @@ pipeline {
 
                     def response = sh(
                         script: """
-                        curl -s -X POST http://localhost:${API_PORT}/predict \
+                        curl -s -X POST http://host.docker.internal:${API_PORT}/predict \
                         -H "Content-Type: application/json" \
                         -d '{
                             "features": [7.4, 0.7, 0.0, 1.9, 0.076, 11.0, 34.0, 0.9978, 3.51, 0.56, 9.4]
@@ -89,7 +89,7 @@ pipeline {
                     def status = sh(
                         script: """
                         curl -s -o response.txt -w '%{http_code}' -X POST \
-                        http://localhost:${API_PORT}/predict \
+                        http://host.docker.internal:${API_PORT}/predict \
                         -H "Content-Type: application/json" \
                         -d '{"wrong_input": [1,2,3]}'
                         """,
@@ -97,8 +97,8 @@ pipeline {
                     ).trim()
 
                     def body = readFile('response.txt')
-                    echo "Error Response: ${body}"
                     echo "Status Code: ${status}"
+                    echo "Error Response: ${body}"
 
                     if (status == "200") {
                         error("❌ Invalid input did not fail as expected.")
