@@ -3,8 +3,8 @@ from pydantic import BaseModel
 import pickle
 import numpy as np
 
-NAME = "Gaurav Nanasaheb Malave"
-ROLL_NO = "2022BCD0017"
+NAME = "Arjun Deshmukh"
+ROLL_NO = "2022BCD0084"
 
 app = FastAPI(title="Wine Quality Prediction API")
 
